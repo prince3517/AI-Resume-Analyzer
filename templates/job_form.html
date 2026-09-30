@@ -1,0 +1,8 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Create Job</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><div class="container"><nav><b>AI Recruiter</b><a href="{{ url_for('dashboard') }}">← Dashboard</a></nav>
+<section class="card"><h1>Create Job</h1><form method="POST">
+<label>Job title</label><input name="title" required placeholder="AI Engineer">
+<label>Shortlist threshold (%)</label><input type="number" name="threshold" min="0" max="100" step="0.5" value="{{ default_threshold }}">
+<label>Job description</label><textarea name="description" rows="16" required placeholder="Paste the full job description..."></textarea>
+<button>Save Job</button></form></section></div></body></html>

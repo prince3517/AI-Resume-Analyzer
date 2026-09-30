@@ -1,0 +1,10 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ candidate.name }}</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><div class="container"><nav><b>AI Recruiter</b><a href="{{ url_for('job_detail', job_id=candidate.job_id) }}">← Back to Job</a></nav>
+<section class="card"><div class="score {% if candidate.shortlisted %}success{% else %}danger{% endif %}">
+<div class="score-number">{{ candidate.score }}%</div><div><h1>{{ candidate.name }}</h1><p>{{ candidate.email or "Email not provided" }}</p>{% if candidate.shortlisted %}<b>SHORTLISTED</b>{% else %}<b>NOT SHORTLISTED</b>{% endif %}</div></div>
+<h2>Score Breakdown</h2><div class="stats mini"><div class="stat"><small>Skills</small><b>{{ candidate.skill_score }}%</b></div><div class="stat"><small>Experience</small><b>{{ candidate.experience_score }}%</b></div><div class="stat"><small>Education</small><b>{{ candidate.education_score }}%</b></div><div class="stat"><small>Semantic</small><b>{{ candidate.semantic_score }}%</b></div></div>
+<h2>Matched Skills</h2><p>{{ candidate.matched_skills or "None detected" }}</p>
+<h2>Missing Skills</h2><p>{{ candidate.missing_skills or "None detected" }}</p>
+{% if not candidate.shortlisted %}<h2>Why not shortlisted?</h2><ul>{% for r in candidate.reasons.split(" | ") %}<li>{{ r }}</li>{% endfor %}</ul>{% endif %}
+</section></div></body></html>

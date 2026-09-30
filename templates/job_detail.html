@@ -1,0 +1,13 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ job.title }}</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><div class="container"><nav><b>AI Recruiter</b><a href="{{ url_for('dashboard') }}">← Dashboard</a></nav>
+<section class="card"><h1>{{ job.title }}</h1><p><b>Shortlist threshold:</b> {{ job.threshold }}%</p><details><summary>View job description</summary><pre class="description">{{ job.description }}</pre></details></section>
+<section class="card"><h2>Screen Resumes</h2><form method="POST" action="{{ url_for('screen_resumes', job_id=job.id) }}" enctype="multipart/form-data">
+<label>Candidate email (optional for this batch)</label><input type="email" name="candidate_email">
+<label>Candidate name (optional)</label><input name="candidate_name">
+<label>Select one or multiple PDF resumes</label><input type="file" name="resumes" accept=".pdf" multiple required>
+<button>Analyze Resumes</button></form></section>
+<section class="card"><h2>Candidates ({{ candidates|length }})</h2>
+{% if candidates %}<table><tr><th>Candidate</th><th>Score</th><th>Skills</th><th>Status</th></tr>
+{% for c in candidates %}<tr><td><a href="{{ url_for('candidate_detail', candidate_id=c.id) }}">{{ c.name }}</a></td><td><b>{{ c.score }}%</b></td><td>{{ c.matched_skills or "—" }}</td><td>{% if c.shortlisted %}<span class="badge good">SHORTLISTED</span>{% else %}<span class="badge bad">NOT SHORTLISTED</span>{% endif %}</td></tr>{% endfor %}</table>{% else %}<p>No screening results yet.</p>{% endif %}</section>
+</div></body></html>

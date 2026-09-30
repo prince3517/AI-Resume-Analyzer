@@ -1,0 +1,21 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recruiter Dashboard</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><div class="container">
+<nav><b>AI Recruiter</b><div><a href="{{ url_for('dashboard') }}">Dashboard</a><a class="button small" href="{{ url_for('new_job') }}">+ New Job</a></div></nav>
+<h1>Recruiter Dashboard</h1>
+<div class="stats">
+<div class="stat"><small>Total Candidates</small><b>{{ stats.total }}</b></div>
+<div class="stat"><small>Shortlisted</small><b>{{ stats.shortlisted }}</b></div>
+<div class="stat"><small>Not Shortlisted</small><b>{{ stats.rejected }}</b></div>
+<div class="stat"><small>Jobs</small><b>{{ stats.jobs }}</b></div>
+</div>
+<section class="card"><h2>Jobs</h2>
+{% if jobs %}
+<table><tr><th>Job</th><th>Threshold</th><th>Created</th><th></th></tr>
+{% for job in jobs %}<tr><td><a href="{{ url_for('job_detail', job_id=job.id) }}">{{ job.title }}</a></td><td>{{ job.threshold }}%</td><td>{{ job.created_at }}</td><td><a class="button small" href="{{ url_for('job_detail', job_id=job.id) }}">Open</a></td></tr>{% endfor %}
+</table>{% else %}<p>No jobs yet. Create your first job.</p>{% endif %}</section>
+<section class="card"><h2>Recent Screening Results</h2>
+{% if recent %}<table><tr><th>Candidate</th><th>Job</th><th>Score</th><th>Status</th></tr>
+{% for c in recent %}<tr><td><a href="{{ url_for('candidate_detail', candidate_id=c.id) }}">{{ c.name }}</a></td><td>{{ c.job_title }}</td><td><b>{{ c.score }}%</b></td><td>{% if c.shortlisted %}<span class="badge good">SHORTLISTED</span>{% else %}<span class="badge bad">NOT SHORTLISTED</span>{% endif %}</td></tr>{% endfor %}</table>{% else %}<p>No candidates screened yet.</p>{% endif %}</section>
+</div></body></html>

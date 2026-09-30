@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Resume Matcher</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>AI Resume & Job Matcher</h1>
+        <p>Analyze a resume against a job description and generate an explainable match score.</p>
+    </header>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data" class="card">
+        <label>Candidate name</label>
+        <input type="text" name="candidate_name" placeholder="e.g. Immanuel V" value="{{ candidate_name }}">
+
+        <label>Candidate email</label>
+        <input type="email" name="candidate_email" placeholder="candidate@example.com" value="{{ candidate_email }}">
+
+        <label>Resume PDF</label>
+        <input type="file" name="resume" accept=".pdf" required>
+
+        <label>Job description</label>
+        <textarea name="job_description" rows="12" required placeholder="Paste the complete job description here..."></textarea>
+
+        <button type="submit">Analyze Resume</button>
+    </form>
+
+    {% if result %}
+    <section class="card result">
+        <div class="score {% if result.shortlisted %}success{% else %}danger{% endif %}">
+            <div class="score-number">{{ result.score }}%</div>
+            <div>
+                {% if result.shortlisted %}
+                    <strong>SHORTLISTED</strong>
+                    <p>Score meets the {{ result.threshold }}% threshold.</p>
+                {% else %}
+                    <strong>NOT SHORTLISTED</strong>
+                    <p>Score is below the {{ result.threshold }}% threshold.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <h2>Score breakdown</h2>
+        <div class="grid">
+            <div><span>Skills</span><b>{{ result.skill_score }}%</b></div>
+            <div><span>Experience</span><b>{{ result.experience_score }}%</b></div>
+            <div><span>Education</span><b>{{ result.education_score }}%</b></div>
+            <div><span>Semantic similarity</span><b>{{ result.semantic_score }}%</b></div>
+        </div>
+
+        <h2>Skills</h2>
+        <p><b>Matched:</b>
+            {% if result.matched_skills %}
+                {{ result.matched_skills | join(", ") }}
+            {% else %}None detected{% endif %}
+        </p>
+        <p><b>Missing:</b>
+            {% if result.missing_skills %}
+                {{ result.missing_skills | join(", ") }}
+            {% else %}None detected{% endif %}
+        </p>
+
+        {% if not result.shortlisted %}
+        <h2>Why not shortlisted?</h2>
+        <ul>
+            {% for reason in result.reasons %}
+                <li>{{ reason }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if result.shortlisted %}
+        <div class="email-box">
+            <h2>Email status</h2>
+            <p>{{ result.email_message }}</p>
+        </div>
+        {% endif %}
+    </section>
+    {% endif %}
+</div>
+</body>
+</html>
